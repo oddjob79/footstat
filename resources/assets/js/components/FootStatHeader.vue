@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light">
+    <nav class="navbar fixed-top navbar-expand-lg">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">Footstat</span>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,22 @@
 </script>
 <style>
 .navbar {
-    height: 30px;
+    height: 80px;
+    background-color: #3e4444;
+    color: white;
 }
+
+.navbar-nav a {
+    color: #a2b9bc;
+}
+
+.navbar-nav a:hover {
+    color: white;
+}
+
+.navbar-nav a:active {
+    background-color: #a2b9bc;
+    color: #3e4444;
+}
+
 </style>
