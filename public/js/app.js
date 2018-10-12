@@ -31374,7 +31374,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     },
 
     created: function created() {
-        this.pullLeagues();
+        //        this.pullLeagues();
+        this.pullIntLeagues();
         this.pullStandings(this.selectedLeague);
         //        this.pullResults(this.defaultLeague);
     },
@@ -31413,37 +31414,49 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 console.log(error);
             });
         },
-        pullStandings: function pullStandings(leagueid) {
+        pullIntLeagues: function pullIntLeagues() {
             var _this2 = this;
+
+            axios.defaults.headers.common = {
+                "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
+            };
+            axios.get('/api/leagues').then(function (response) {
+                _this2.leaguedata = response.data;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        pullStandings: function pullStandings(leagueid) {
+            var _this3 = this;
 
             this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/standings';
             axios.get(this.apiUrl).then(function (response) {
-                _this2.standingsdata = response.data.standings;
+                _this3.standingsdata = response.data.standings;
             }).catch(function (error) {
                 console.log(error);
             });
         },
         pullResults: function pullResults(leagueid) {
-            var _this3 = this;
+            var _this4 = this;
 
             this.matchday = this.getMatchday(leagueid);
             //            console.log('result matchday = '+this.matchday-1);
             this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/matches?matchday=' + (this.matchday - 1);
             axios.get(this.apiUrl).then(function (response) {
-                _this3.resultsdata = response.data.matches;
+                _this4.resultsdata = response.data.matches;
                 //                console.log(this.resultsdata);
             }).catch(function (error) {
                 console.log(error);
             });
         },
         pullFixtures: function pullFixtures(leagueid) {
-            var _this4 = this;
+            var _this5 = this;
 
             this.matchday = this.getMatchday(leagueid);
             //            console.log('result matchday = '+this.matchday-1);
             this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/matches?matchday=' + this.matchday;
             axios.get(this.apiUrl).then(function (response) {
-                _this4.fixturedata = response.data.matches;
+                _this5.fixturedata = response.data.matches;
                 //                console.log(this.resultsdata);
             }).catch(function (error) {
                 console.log(error);
@@ -31542,11 +31555,33 @@ window.Vue = __webpack_require__(36);
 
 
 new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
-   el: '#app',
-   components: {
-      FootStatHeader: __WEBPACK_IMPORTED_MODULE_4__components_FootStatHeader__["default"],
-      HomePage: __WEBPACK_IMPORTED_MODULE_5__components_HomePage__["a" /* default */]
-   }
+    el: '#app',
+    components: {
+        FootStatHeader: __WEBPACK_IMPORTED_MODULE_4__components_FootStatHeader__["default"],
+        HomePage: __WEBPACK_IMPORTED_MODULE_5__components_HomePage__["a" /* default */]
+    },
+
+    data: {
+        leagues: {}
+    },
+
+    created: function created() {
+        this.getLeagues();
+    },
+
+
+    methods: {
+        getLeagues: function getLeagues() {
+            var _this = this;
+
+            axios.get('/api/leagues').then(function (response) {
+                _this.leagues = response.data;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }
+
 });
 
 /***/ }),

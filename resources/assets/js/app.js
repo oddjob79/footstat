@@ -18,5 +18,26 @@ new Vue({
     components: {
        FootStatHeader,
        HomePage
+    },
+    
+    data: {
+        leagues: {},
+    },
+    
+    created() {
+        this.getLeagues();
+    },
+    
+    methods: {
+        getLeagues() {
+            axios.get('/api/leagues')
+            .then(response => {
+                this.leagues = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        }
     }
+    
 });

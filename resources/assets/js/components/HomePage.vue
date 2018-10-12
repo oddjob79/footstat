@@ -117,7 +117,8 @@ export default {
     },
     
     created() {
-        this.pullLeagues();
+//        this.pullLeagues();
+        this.pullIntLeagues();
         this.pullStandings(this.selectedLeague);
 //        this.pullResults(this.defaultLeague);
     },
@@ -152,6 +153,19 @@ export default {
             axios.get(this.apiUrl)
             .then(response => {
                 this.leaguedata = response.data.competitions;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+        
+        pullIntLeagues() {
+            axios.defaults.headers.common = {
+              "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
+            }        
+            axios.get('/api/leagues')
+            .then(response => {
+                this.leaguedata = response.data;
             })
             .catch(error => {
                 console.log(error);

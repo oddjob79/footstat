@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('index');
 });
+
+Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
+    Route::resource('leagues', 'LeaguesController');
+});
