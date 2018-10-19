@@ -72,12 +72,11 @@
 export default {
 
     name: "HomePage",
-    
+    props: ['leagues'],
     data() {
         return {
             defaultLeague: '2021',
             apiUrl: '',
-            leaguedata: '',
             selectedLeague: '2021',
             standingsdata: '',
             matchday: '',
@@ -95,14 +94,14 @@ export default {
         },
         
         filteredLeagues() {
-            if (this.leaguedata.length > 0) {
+            if (this.leagues.length > 0) {            
                 let excludedAreas = [
                     2077, // Europe (Champs League & Euros)
                     2032, // Brazil
                     2267 // World (World Cup)
                 ];
 
-                return this.leaguedata.filter(lg => excludedAreas.indexOf(lg.area.id) == -1);
+                return this.leagues.filter(lg => excludedAreas.indexOf(lg.area.id) == -1);
              }
         },
         
@@ -115,17 +114,11 @@ export default {
         }
         
     },
-    
-    created() {
-//        this.pullLeagues();
-        this.pullIntLeagues();
-        this.pullStandings(this.selectedLeague);
-//        this.pullResults(this.defaultLeague);
-    },
-    
+ 
     watch: {
-        leaguedata() {
-            if (this.leaguedata) {
+        leagues() {
+            if (this.leagues) {
+                this.pullStandings(this.selectedLeague);
                 this.pullResults(this.selectedLeague);
                 this.pullFixtures(this.selectedLeague);                
             }
@@ -144,76 +137,45 @@ export default {
             this.pullResults(leagueid);
             this.pullFixtures(leagueid);            
         },
-    
-        pullLeagues() {
-            axios.defaults.headers.common = {
-              "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
-            }
-            this.apiUrl = 'http://api.football-data.org/v2/competitions?plan=TIER_ONE'
-            axios.get(this.apiUrl)
-            .then(response => {
-                this.leaguedata = response.data.competitions;
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
-        
-        pullIntLeagues() {
-            axios.defaults.headers.common = {
-              "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
-            }        
-            axios.get('/api/leagues')
-            .then(response => {
-                this.leaguedata = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
         
         pullStandings(leagueid) {
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/'+leagueid+'/standings';
+            this.apiUrl = '/api/standings/'+leagueid;
             axios.get(this.apiUrl)
             .then(response => {
-                this.standingsdata = response.data.standings;
+                this.standingsdata = response.data;
             })
             .catch(error => {
                 console.log(error);
             })
         },
         
-        pullResults(leagueid) {
-            this.matchday = this.getMatchday(leagueid);
-//            console.log('result matchday = '+this.matchday-1);
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/'+leagueid+'/matches?matchday='+(this.matchday-1);
-            axios.get(this.apiUrl)
-            .then(response => {
-                this.resultsdata = response.data.matches;
-//                console.log(this.resultsdata);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
-
         pullFixtures(leagueid) {
-            this.matchday = this.getMatchday(leagueid);
-//            console.log('result matchday = '+this.matchday-1);
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/'+leagueid+'/matches?matchday='+this.matchday;
+            this.matchday = this.getMatchday(leagueid);        
+            this.apiUrl = '/api/matchday/'+leagueid+'/'+this.matchday;
             axios.get(this.apiUrl)
             .then(response => {
-                this.fixturedata = response.data.matches;
-//                console.log(this.resultsdata);
+                this.fixturedata = response.data;
             })
             .catch(error => {
                 console.log(error);
             })
         },
+        
+        pullResults(leagueid, matchday) {
+            this.matchday = this.getMatchday(leagueid);        
+            this.apiUrl = '/api/matchday/'+leagueid+'/'+(this.matchday-1);
+            axios.get(this.apiUrl)
+            .then(response => {
+                this.resultsdata = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },        
         
         
         getMatchday(leagueid) {
-            let currLeagueobj = this.leaguedata.filter(lg => lg.id == leagueid);
+            let currLeagueobj = this.leagues.filter(lg => lg.id == leagueid);
             return currLeagueobj[0].currentSeason.currentMatchday;
         },  
         
@@ -221,7 +183,6 @@ export default {
 
     filters: {
         dateSubstr: function(datestring) {
-//            let reconDate = datestring+'T14:00:00Z'
             let localDateTime = new Date(datestring+'T14:00:00Z');
             return localDateTime.toDateString();
             

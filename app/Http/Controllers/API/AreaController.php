@@ -4,10 +4,8 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests;
-use Grambas\FootballData\Facades\FootballDataFacade;
 
-class LeaguesController extends Controller
+class AreaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +14,18 @@ class LeaguesController extends Controller
      */
     public function index()
     {
-        return \Football::getLeagues(['plan' => 'TIER_ONE']);
+        //
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +46,18 @@ class LeaguesController extends Controller
      */
     public function show($id)
     {
-        return \Football::getLeague($id);
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
     }
 
     /**
@@ -64,40 +82,36 @@ class LeaguesController extends Controller
     {
         //
     }
-
+    
     // Grab data from api areas and populate local areas data table
     public function populate()
     {
-        $leaguedata = '';
-        $leaguedata = $this->index();
+        $areadata = '';
+        $areadata = \Football::getAreas();
         
-        if (!empty($leaguedata)) {
+        if (!empty($areadata)) {
             $this->truncate();
         }
         
-    foreach($leaguedata as $league) {
-//        echo $league->id.' - '.$league->name . '<br>';
-        $leagueobj = new \App\League;
-        $leagueobj->id = $league->id;
-        $leagueobj->area_id = $league->area->id;
-        $leagueobj->league_name = $league->name;
-        $leagueobj->league_code = $league->code;
-        $leagueobj->emblem_url = $league->emblemUrl;
-        $leagueobj->season_start = $league->currentSeason->startDate;
-        $leagueobj->season_end = $league->currentSeason->endDate;
-        $leagueobj->current_matchday = $league->currentSeason->currentMatchday;
-        $leagueobj->save();        
+    foreach($areadata as $area) {
+//        echo $area->id.' - '.$area->name . '<br>';
+        $areaobj = new \App\Area;
+        $areaobj->id = $area->id;
+        $areaobj->area_name = $area->name;
+        $areaobj->area_code = $area->countryCode;
+        $areaobj->parentAreaId = $area->parentAreaId;
+        $areaobj->save();        
     }
        
-    return $leagueobj->all();
+    return $areaobj->all();
         
         
     }
     
-    // truncate local leagues data table
+    // truncate local areas data table
     public function truncate()
     {
-        \App\League::truncate();
+        \App\Area::truncate();
     }  
     
 }

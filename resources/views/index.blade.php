@@ -3,5 +3,5 @@
 @section('title', 'FootStat')
 
 @section('content')
-<home-page></home-page>
+<home-page :leagues="leagues"></home-page>
 @endsection

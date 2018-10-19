@@ -31326,12 +31326,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 /* harmony default export */ __webpack_exports__["a"] = ({
 
     name: "HomePage",
-
+    props: ['leagues'],
     data: function data() {
         return {
             defaultLeague: '2021',
             apiUrl: '',
-            leaguedata: '',
             selectedLeague: '2021',
             standingsdata: '',
             matchday: '',
@@ -31351,13 +31350,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             }
         },
         filteredLeagues: function filteredLeagues() {
-            if (this.leaguedata.length > 0) {
+            if (this.leagues.length > 0) {
                 var excludedAreas = [2077, // Europe (Champs League & Euros)
                 2032, // Brazil
                 2267 // World (World Cup)
                 ];
 
-                return this.leaguedata.filter(function (lg) {
+                return this.leagues.filter(function (lg) {
                     return excludedAreas.indexOf(lg.area.id) == -1;
                 });
             }
@@ -31373,17 +31372,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }
     },
 
-    created: function created() {
-        //        this.pullLeagues();
-        this.pullIntLeagues();
-        this.pullStandings(this.selectedLeague);
-        //        this.pullResults(this.defaultLeague);
-    },
-
-
     watch: {
-        leaguedata: function leaguedata() {
-            if (this.leaguedata) {
+        leagues: function leagues() {
+            if (this.leagues) {
+                this.pullStandings(this.selectedLeague);
                 this.pullResults(this.selectedLeague);
                 this.pullFixtures(this.selectedLeague);
             }
@@ -31401,69 +31393,40 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             this.pullResults(leagueid);
             this.pullFixtures(leagueid);
         },
-        pullLeagues: function pullLeagues() {
+        pullStandings: function pullStandings(leagueid) {
             var _this = this;
 
-            axios.defaults.headers.common = {
-                "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
-            };
-            this.apiUrl = 'http://api.football-data.org/v2/competitions?plan=TIER_ONE';
+            this.apiUrl = '/api/standings/' + leagueid;
             axios.get(this.apiUrl).then(function (response) {
-                _this.leaguedata = response.data.competitions;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        pullIntLeagues: function pullIntLeagues() {
-            var _this2 = this;
-
-            axios.defaults.headers.common = {
-                "X-Auth-Token": "13c6b55f8b8a4e2aa431cc56aa377eb2"
-            };
-            axios.get('/api/leagues').then(function (response) {
-                _this2.leaguedata = response.data;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        pullStandings: function pullStandings(leagueid) {
-            var _this3 = this;
-
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/standings';
-            axios.get(this.apiUrl).then(function (response) {
-                _this3.standingsdata = response.data.standings;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        pullResults: function pullResults(leagueid) {
-            var _this4 = this;
-
-            this.matchday = this.getMatchday(leagueid);
-            //            console.log('result matchday = '+this.matchday-1);
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/matches?matchday=' + (this.matchday - 1);
-            axios.get(this.apiUrl).then(function (response) {
-                _this4.resultsdata = response.data.matches;
-                //                console.log(this.resultsdata);
+                _this.standingsdata = response.data;
             }).catch(function (error) {
                 console.log(error);
             });
         },
         pullFixtures: function pullFixtures(leagueid) {
-            var _this5 = this;
+            var _this2 = this;
 
             this.matchday = this.getMatchday(leagueid);
-            //            console.log('result matchday = '+this.matchday-1);
-            this.apiUrl = 'http://api.football-data.org/v2/competitions/' + leagueid + '/matches?matchday=' + this.matchday;
+            this.apiUrl = '/api/matchday/' + leagueid + '/' + this.matchday;
             axios.get(this.apiUrl).then(function (response) {
-                _this5.fixturedata = response.data.matches;
-                //                console.log(this.resultsdata);
+                _this2.fixturedata = response.data;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        pullResults: function pullResults(leagueid, matchday) {
+            var _this3 = this;
+
+            this.matchday = this.getMatchday(leagueid);
+            this.apiUrl = '/api/matchday/' + leagueid + '/' + (this.matchday - 1);
+            axios.get(this.apiUrl).then(function (response) {
+                _this3.resultsdata = response.data;
             }).catch(function (error) {
                 console.log(error);
             });
         },
         getMatchday: function getMatchday(leagueid) {
-            var currLeagueobj = this.leaguedata.filter(function (lg) {
+            var currLeagueobj = this.leagues.filter(function (lg) {
                 return lg.id == leagueid;
             });
             return currLeagueobj[0].currentSeason.currentMatchday;
@@ -31472,7 +31435,6 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     filters: {
         dateSubstr: function dateSubstr(datestring) {
-            //            let reconDate = datestring+'T14:00:00Z'
             var localDateTime = new Date(datestring + 'T14:00:00Z');
             return localDateTime.toDateString();
         },
