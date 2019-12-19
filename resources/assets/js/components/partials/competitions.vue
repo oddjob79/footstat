@@ -4,10 +4,12 @@
         <div class="row">
             <b-form-group>
               <b-form-radio-group buttons v-model="selectedLeague" >
-                 <b-form-radio button v-for="league in filteredLeagues" :key="league.id" v-bind:value="league.id">{{ league.name }}</b-form-radio>
-              </b-form-radio-group>   
-            </b-form-group>        
-        </div>        
+                 <b-form-radio button v-for="league in filteredLeagues" :key="league.id" v-bind:value="league.id">
+                   {{ league.name }}
+                 </b-form-radio>
+              </b-form-radio-group>
+            </b-form-group>
+        </div>
     </div>
 </template>
 <script>
@@ -28,9 +30,9 @@ export default {
     },
 
    computed: {
-        
+
         filteredLeagues() {
-            if (this.leagues.length > 0) {            
+            if (this.leagues.length > 0) {
                 let excludedAreas = [
                     2077, // Europe (Champs League & Euros)
                     2032, // Brazil
@@ -41,16 +43,16 @@ export default {
              }
         }
     },
-    
+
     watch: {
-        
+
         selectedLeague() {
             if (this.selectedLeague) {
                 this.updateContent(this.selectedLeague);
             }
         }
     }
-    
+
 }
 </script>
 <style>

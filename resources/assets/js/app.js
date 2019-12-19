@@ -12,22 +12,24 @@ window.Vue = require('vue');
 
 import FootStatHeader from './components/FootStatHeader';
 import HomePage from './components/HomePage';
- 
+import Competitions from './components/partials/competitions';
+
 new Vue({
     el: '#app',
     components: {
        FootStatHeader,
-       HomePage
+       HomePage,
+       Competitions
     },
-    
+
     data: {
         leagues: {},
     },
-    
+
     created() {
         this.getLeagues();
     },
-    
+
     methods: {
         getLeagues() {
             axios.get('/api/leagues')
@@ -39,5 +41,5 @@ new Vue({
             })
         }
     }
-    
+
 });
