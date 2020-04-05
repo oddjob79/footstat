@@ -9,4 +9,10 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-.env
+.env*
+footstat.sql
+ext/py_env
+ext/.hypothesis
+ext/.pytest_cache
+ext/historical_football_data.csv
+resources/assets/js/FootApp.vue

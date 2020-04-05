@@ -1,13 +1,13 @@
 <template>
 
     <div class="container-fluid home">
-        <div class="row">
+        <!-- <div class="row">
             <b-form-group>
               <b-form-radio-group buttons v-model="selectedLeague" >
                  <b-form-radio button v-for="league in filteredLeagues" :key="league.id" v-bind:value="league.id">{{ league.name }}</b-form-radio>
-              </b-form-radio-group>   
-            </b-form-group>        
-        </div>        
+              </b-form-radio-group>
+            </b-form-group>
+        </div>         -->
         <div class="row">
             <div class="col-sm">
                 <br>
@@ -49,7 +49,7 @@
                     <td>{{ res.homeTeam.name }}</td>
                     <td>{{ res.score.fullTime.homeTeam }}</td>
                     <td> - </td>
-                    <td>{{ res.score.fullTime.awayTeam }}</td>                    
+                    <td>{{ res.score.fullTime.awayTeam }}</td>
                     <td>{{ res.awayTeam.name }}</td>
                 </tr>
                 </table>
@@ -84,7 +84,7 @@ export default {
             fixturedata: '',
         }
     },
-    
+
     computed: {
         standingsTable() {
             if (this.standingsdata.length > 0) {
@@ -92,9 +92,9 @@ export default {
                 return totalTable[0].table;
             }
         },
-        
+
         filteredLeagues() {
-            if (this.leagues.length > 0) {            
+            if (this.leagues.length > 0) {
                 let excludedAreas = [
                     2077, // Europe (Champs League & Euros)
                     2032, // Brazil
@@ -104,7 +104,7 @@ export default {
                 return this.leagues.filter(lg => excludedAreas.indexOf(lg.area.id) == -1);
              }
         },
-        
+
         scheduledGames() {
             if (this.fixturedata.length > 0) {
                 let dateArray = this.fixturedata.map(fd => fd.utcDate.substring(0, 10));
@@ -112,32 +112,32 @@ export default {
                 return uniqueDates;
             }
         }
-        
+
     },
- 
+
     watch: {
         leagues() {
             if (this.leagues) {
                 this.pullStandings(this.selectedLeague);
                 this.pullResults(this.selectedLeague);
-                this.pullFixtures(this.selectedLeague);                
+                this.pullFixtures(this.selectedLeague);
             }
         },
-        
+
         selectedLeague() {
             if (this.selectedLeague) {
                 this.updateContent(this.selectedLeague);
             }
         }
     },
-    
+
     methods:{
         updateContent(leagueid) {
             this.pullStandings(leagueid);
             this.pullResults(leagueid);
-            this.pullFixtures(leagueid);            
+            this.pullFixtures(leagueid);
         },
-        
+
         pullStandings(leagueid) {
             this.apiUrl = '/api/standings/'+leagueid;
             axios.get(this.apiUrl)
@@ -148,10 +148,10 @@ export default {
                 console.log(error);
             })
         },
-        
+
         pullFixtures(leagueid) {
-            this.matchday = this.getMatchday(leagueid);        
-            this.apiUrl = '/api/matchday/'+leagueid+'/'+this.matchday;
+            this.matchday = this.getMatchday(leagueid);
+            this.apiUrl = '/api/matchday/'+leagueid+'/'+(this.matchday+1);
             axios.get(this.apiUrl)
             .then(response => {
                 this.fixturedata = response.data;
@@ -160,10 +160,10 @@ export default {
                 console.log(error);
             })
         },
-        
+
         pullResults(leagueid, matchday) {
-            this.matchday = this.getMatchday(leagueid);        
-            this.apiUrl = '/api/matchday/'+leagueid+'/'+(this.matchday-1);
+            this.matchday = this.getMatchday(leagueid);
+            this.apiUrl = '/api/matchday/'+leagueid+'/'+this.matchday;
             axios.get(this.apiUrl)
             .then(response => {
                 this.resultsdata = response.data;
@@ -171,29 +171,29 @@ export default {
             .catch(error => {
                 console.log(error);
             })
-        },        
-        
-        
+        },
+
+
         getMatchday(leagueid) {
             let currLeagueobj = this.leagues.filter(lg => lg.id == leagueid);
             return currLeagueobj[0].currentSeason.currentMatchday;
-        },  
-        
+        },
+
     },
 
     filters: {
         dateSubstr: function(datestring) {
             let localDateTime = new Date(datestring+'T14:00:00Z');
             return localDateTime.toDateString();
-            
+
         },
-        
+
         timeSubstr: function(datestring) {
             let localDateTime = new Date(datestring);
             return localDateTime.toTimeString().substring(0, 5);
         }
     }
-    
+
 }
 </script>
 <style>
@@ -205,4 +205,4 @@ export default {
     padding-right: .5em;
 }
 
-</style>
+</style> */

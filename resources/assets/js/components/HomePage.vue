@@ -1,13 +1,7 @@
 <template>
 
     <div class="container-fluid home">
-        <!-- <div class="row">
-            <b-form-group>
-              <b-form-radio-group buttons v-model="selectedLeague" >
-                 <b-form-radio button v-for="league in filteredLeagues" :key="league.id" v-bind:value="league.id">{{ league.name }}</b-form-radio>
-              </b-form-radio-group>
-            </b-form-group>
-        </div>         -->
+        <competitions :leagues="leagues" @update-league="updateLeague"></competitions>
         <div class="row">
             <div class="col-sm">
                 <br>
@@ -69,10 +63,13 @@
     </div>
 </template>
 <script>
+import Competitions from './partials/competitions'
 export default {
-
     name: "HomePage",
     props: ['leagues'],
+    components: {
+        Competitions
+    },
     data() {
         return {
             defaultLeague: '2021',
@@ -93,18 +90,6 @@ export default {
             }
         },
 
-        filteredLeagues() {
-            if (this.leagues.length > 0) {
-                let excludedAreas = [
-                    2077, // Europe (Champs League & Euros)
-                    2032, // Brazil
-                    2267 // World (World Cup)
-                ];
-
-                return this.leagues.filter(lg => excludedAreas.indexOf(lg.area.id) == -1);
-             }
-        },
-
         scheduledGames() {
             if (this.fixturedata.length > 0) {
                 let dateArray = this.fixturedata.map(fd => fd.utcDate.substring(0, 10));
@@ -116,68 +101,74 @@ export default {
     },
 
     watch: {
-        leagues() {
-            if (this.leagues) {
-                this.pullStandings(this.selectedLeague);
-                this.pullResults(this.selectedLeague);
-                this.pullFixtures(this.selectedLeague);
-            }
-        },
-
-        selectedLeague() {
-            if (this.selectedLeague) {
-                this.updateContent(this.selectedLeague);
-            }
+      leagues() {
+        if (this.leagues) {
+            this.pullStandings(this.selectedLeague);
+            this.pullResults(this.selectedLeague);
+            this.pullFixtures(this.selectedLeague);
         }
+      }
+
+      // selectedLeague() {
+      //   if (this.selectedLeague) {
+      //       this.updateContent(this.selectedLeague);
+      //   }
+      // }
     },
 
     methods:{
-        updateContent(leagueid) {
-            this.pullStandings(leagueid);
-            this.pullResults(leagueid);
-            this.pullFixtures(leagueid);
-        },
+      updateLeague(lgid) {
+        // console.log(e);
+        // this.selectedLeague = lgid;
+        this.updateContent(lgid);
+      },
 
-        pullStandings(leagueid) {
-            this.apiUrl = '/api/standings/'+leagueid;
-            axios.get(this.apiUrl)
-            .then(response => {
-                this.standingsdata = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+      updateContent(leagueid) {
+          this.pullStandings(leagueid);
+          this.pullResults(leagueid);
+          this.pullFixtures(leagueid);
+      },
 
-        pullFixtures(leagueid) {
-            this.matchday = this.getMatchday(leagueid);
-            this.apiUrl = '/api/matchday/'+leagueid+'/'+this.matchday;
-            axios.get(this.apiUrl)
-            .then(response => {
-                this.fixturedata = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+      pullStandings(leagueid) {
+          this.apiUrl = '/api/standings/'+leagueid;
+          axios.get(this.apiUrl)
+          .then(response => {
+              this.standingsdata = response.data;
+          })
+          .catch(error => {
+              console.log(error);
+          })
+      },
 
-        pullResults(leagueid, matchday) {
-            this.matchday = this.getMatchday(leagueid);
-            this.apiUrl = '/api/matchday/'+leagueid+'/'+(this.matchday-1);
-            axios.get(this.apiUrl)
-            .then(response => {
-                this.resultsdata = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+      pullFixtures(leagueid) {
+          this.matchday = this.getMatchday(leagueid);
+          this.apiUrl = '/api/matchday/'+leagueid+'/'+(this.matchday+1);
+          axios.get(this.apiUrl)
+          .then(response => {
+              this.fixturedata = response.data;
+          })
+          .catch(error => {
+              console.log(error);
+          })
+      },
+
+      pullResults(leagueid, matchday) {
+          this.matchday = this.getMatchday(leagueid);
+          this.apiUrl = '/api/matchday/'+leagueid+'/'+this.matchday;
+          axios.get(this.apiUrl)
+          .then(response => {
+              this.resultsdata = response.data;
+          })
+          .catch(error => {
+              console.log(error);
+          })
+      },
 
 
-        getMatchday(leagueid) {
-            let currLeagueobj = this.leagues.filter(lg => lg.id == leagueid);
-            return currLeagueobj[0].currentSeason.currentMatchday;
-        },
+      getMatchday(leagueid) {
+          let currLeagueobj = this.leagues.filter(lg => lg.id == leagueid);
+          return currLeagueobj[0].currentSeason.currentMatchday;
+      }
 
     },
 
@@ -205,4 +196,4 @@ export default {
     padding-right: .5em;
 }
 
-</style> */
+</style>
