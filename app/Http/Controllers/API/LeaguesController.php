@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Grambas\FootballData\Facades\FootballDataFacade;
+use App\League;
 
 class LeaguesController extends Controller
 {
@@ -16,7 +17,8 @@ class LeaguesController extends Controller
      */
     public function index()
     {
-        return \Football::getLeagues(['plan' => 'TIER_ONE']);
+      return League::all();
+        // return \Football::getLeagues(['plan' => 'TIER_ONE']);
     }
 
 
@@ -39,7 +41,8 @@ class LeaguesController extends Controller
      */
     public function show($id)
     {
-        return \Football::getLeague($id);
+      return League::find($id);
+        // return \Football::getLeague($id);
     }
 
     /**
@@ -70,11 +73,11 @@ class LeaguesController extends Controller
     {
         $leaguedata = '';
         $leaguedata = $this->index();
-        
+
         if (!empty($leaguedata)) {
             $this->truncate();
         }
-        
+
     foreach($leaguedata as $league) {
 //        echo $league->id.' - '.$league->name . '<br>';
         $leagueobj = new \App\League;
@@ -86,18 +89,18 @@ class LeaguesController extends Controller
         $leagueobj->season_start = $league->currentSeason->startDate;
         $leagueobj->season_end = $league->currentSeason->endDate;
         $leagueobj->current_matchday = $league->currentSeason->currentMatchday;
-        $leagueobj->save();        
+        $leagueobj->save();
     }
-       
+
     return $leagueobj->all();
-        
-        
+
+
     }
-    
+
     // truncate local leagues data table
     public function truncate()
     {
         \App\League::truncate();
-    }  
-    
+    }
+
 }

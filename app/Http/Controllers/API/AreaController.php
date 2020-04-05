@@ -82,36 +82,36 @@ class AreaController extends Controller
     {
         //
     }
-    
+
     // Grab data from api areas and populate local areas data table
     public function populate()
     {
         $areadata = '';
         $areadata = \Football::getAreas();
-        
+
         if (!empty($areadata)) {
             $this->truncate();
         }
+
+      foreach($areadata as $area) {
+  //        echo $area->id.' - '.$area->name . '<br>';
+          $areaobj = new \App\Area;
+          $areaobj->id = $area->id;
+          $areaobj->area_name = $area->name;
+          $areaobj->area_code = $area->countryCode;
+          $areaobj->parentAreaId = $area->parentAreaId;
+          $areaobj->save();
+      }
+
+      return $areaobj->all();
         
-    foreach($areadata as $area) {
-//        echo $area->id.' - '.$area->name . '<br>';
-        $areaobj = new \App\Area;
-        $areaobj->id = $area->id;
-        $areaobj->area_name = $area->name;
-        $areaobj->area_code = $area->countryCode;
-        $areaobj->parentAreaId = $area->parentAreaId;
-        $areaobj->save();        
+
     }
-       
-    return $areaobj->all();
-        
-        
-    }
-    
+
     // truncate local areas data table
     public function truncate()
     {
         \App\Area::truncate();
-    }  
-    
+    }
+
 }

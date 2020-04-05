@@ -17,7 +17,7 @@ class StandingsController extends Controller
         return \Football::getLeagueStandings($id);
     }
 
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -68,24 +68,24 @@ class StandingsController extends Controller
     {
         // list of competition ids we'll be using
         $competitionarr = [2015, 2016, 2021, 2002, 2003, 2019, 2017, 2014];
-//        $competitionarr = [2015, 2016];        
-        
+//        $competitionarr = [2015, 2016];
+
         //loop through the different competition id's and collect the team data for each one, then append to the $compstandata object per competition
         $compstandata = [];
         foreach ($competitionarr as $competitionid) {
             $compstandata[$competitionid] = $this->index($competitionid);
             $compstandata[$competitionid]->competitionId = $competitionid;
         }
-        
+
 //        return $compstandata;
-        
+
         // truncate table if data returned by api call
         if (!empty($compstandata)) {
             $this->truncate();
         }
 
         $leagueid = '';
-        
+
         // loop through competitions
         foreach($compstandata as $standata) {
 //            return var_dump($standata);
@@ -114,14 +114,14 @@ class StandingsController extends Controller
                 }
             }
         }
-           
+
         return $standobj->all();
-        
+
     }
-    
+
     // truncate local team data table
     public function truncate()
     {
-        \App\Team::truncate();
-    }        
+        \App\Standing::truncate();
+    }
 }

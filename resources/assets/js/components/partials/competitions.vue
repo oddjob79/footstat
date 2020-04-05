@@ -3,7 +3,7 @@
     <b-form-group>
       <b-form-radio-group buttons v-model="selectedLeague" >
          <b-form-radio button v-for="league in leagues" :key="league.id" v-bind:value="league.id" @change="newLeague(league.id)">
-           {{ league.name }}
+           {{ league.league_name }}
          </b-form-radio>
       </b-form-radio-group>
     </b-form-group>

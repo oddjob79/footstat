@@ -26666,14 +26666,6 @@ Object(__WEBPACK_IMPORTED_MODULE_1__utils_plugins__["b" /* pluginFactory */])({
 
 
 
-// import Competitions from './components/partials/competitions';
-
-
-// Vue.component('Competitions', {
-//   props: ['leagues']
-//   // ,
-//   // components: { Competitions }
-// })
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -26712,8 +26704,9 @@ Object(__WEBPACK_IMPORTED_MODULE_1__utils_plugins__["b" /* pluginFactory */])({
                 2267 // World (World Cup)
                 ];
 
+                // return lgarr.filter(lg => excludedAreas.indexOf(lg.area.id) == -1).sort();
                 return lgarr.filter(function (lg) {
-                    return excludedAreas.indexOf(lg.area.id) == -1;
+                    return excludedAreas.indexOf(lg.area_id) == -1;
                 }).sort();
             }
         }
@@ -78106,7 +78099,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             var currLeagueobj = this.leagues.filter(function (lg) {
                 return lg.id == leagueid;
             });
-            return currLeagueobj[0].currentSeason.currentMatchday;
+            // return currLeagueobj[0].currentSeason.currentMatchday;
+            return currLeagueobj[0].current_matchday;
         }
     },
 
@@ -78978,7 +78972,11 @@ var render = function() {
                     }
                   }
                 },
-                [_vm._v("\n         " + _vm._s(league.name) + "\n       ")]
+                [
+                  _vm._v(
+                    "\n         " + _vm._s(league.league_name) + "\n       "
+                  )
+                ]
               )
             }),
             1

@@ -167,7 +167,8 @@ export default {
 
       getMatchday(leagueid) {
           let currLeagueobj = this.leagues.filter(lg => lg.id == leagueid);
-          return currLeagueobj[0].currentSeason.currentMatchday;
+          // return currLeagueobj[0].currentSeason.currentMatchday;
+          return currLeagueobj[0].current_matchday;
       }
 
     },
