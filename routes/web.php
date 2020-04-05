@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/stats', function () {
+    return view('stats');
+});
+
 /*Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
     Route::resource('leagues', 'LeaguesController');
     Route::resource('standings', 'StandingsController');
